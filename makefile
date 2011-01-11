@@ -21,16 +21,16 @@
 
 tout: latex html pdf
 
-html: lisez-moi.html read-me.html
+html: lisez-moi.html README.html
 
 latex: lisez-moi-1.dvi read-me-1.dvi
 
 lisez-moi-1.dvi: lisez-moi.tex lisez-moi-1.tex
 
-read-me-1.dvi: read-me.tex read-me-1.tex
+read-me-1.dvi: README.tex read-me-1.tex
 
 pdf: read-me-1.pdf lisez-moi-1.pdf
 
-read-me-1.pdf: read-me.tex read-me-1.tex
+read-me-1.pdf: README.tex read-me-1.tex
 
 lisez-moi-1.pdf: lisez-moi.tex lisez-moi-1.tex
