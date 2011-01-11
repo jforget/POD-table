@@ -1,0 +1,288 @@
+=head1 READ-ME
+
+=head2 Presentation of the read-me file
+
+This F<read-me.pod> file has a double purpose.
+
+=over 4
+
+=item 1
+
+Describe how the layout system functions.
+
+=item 2
+
+Be used as an input file for a demo of the layout system.
+
+=back
+
+In other words, either you read the POD file as is to learn
+what will happen, or you read the HTML generated file or the
+PDF generated file to learn what has juste happened.
+
+=head2 Short Background
+
+I have developed this layout system because I noticed a boardgame,
+the rules of which are available on the net. I though it would be 
+nice if this game had a larger audience, including French-speaking
+people. In addition, the rules were rather short, so I decided
+to translate them in French.
+
+As many Perl programmers, I like using the POD format, because
+it is simple and yet it provides most basic features:
+chapters, lists, links, bold chars, italics. The only missing
+basic feature is tables. Alas, there were several tables in
+the game rules. Of course, when using POD, you can always
+show a table by using preformatted text, as this:
+
+  .-----.-----.-----.
+  |  8  |  1  |  6  |
+  .-----.-----.-----.
+  |  3  |  5  |  7  |
+  .-----.-----.-----.
+  |  4  |  9  |  2  |
+  .-----.-----.-----.
+
+The result is acceptable when using C<perldoc> to display the POD
+or when reading it in your favourite text editor, but the same thing
+in HTML with E<lt>preE<gt> tags or in
+LATEX within a C<verbatim> environment is quite frustrating.
+Having the following is much better:
+
+  +-----+-----+-----+
+  |  8  |  1  |  6  |
+  +-----+-----+-----+
+  |  3  |  5  |  7  |
+  +-----+-----+-----+
+  |  4  |  9  |  2  |
+  +-----+-----+-----+
+
+(Of course, if you read this using C<perldoc> or you favourite
+text editor, you will not see much difference).
+
+There is the C<Pseudo::POD> module, which allows us to generate
+pretty tables in HTML, LATEX and other advanced display formats,
+but when you edit your source file under 
+Emacs / vi / other or when you display the file with
+C<perldoc>, the result is disappointing.
+
+Another solution consists in generating the HTML / LATEX
+file, and then edit it using Emacs, to replace the ASCII-art
+table with a proper table. See the C<table-recognize> and 
+C<table-generate> functions, as well as the other
+C<table->I<xxx> functions. The downside is that this is incompatible
+with automatic processing and F<makefiles>.
+
+=head2 How to write tables in your editor
+
+You can read the chapter about table-based text in the Emacs
+documentation. Anyway, here is what you need to know, even
+if you use another text editor.
+
+The table must be interpreted by C<pod2html> and C<pod2latex>
+as pre-formatted text. Therefore, each line must begin
+with some space.
+
+In addition, the tables must be recognized as such by Emacs.
+Therefore, the lines delimiting the rows and the columns must
+be minus signs C<-> and pipes C<|>. The junctions between lines
+must be plus signs C<+>.
+
+I<Note:> For technical reasons, I will show examples below, where
+the line junctions are dots instead of plus signs. Just imagine
+they are plus signs.
+
+=head2 How It Works
+
+The layout system functions with the following steps.
+
+=over 4
+
+=item 1
+
+The standard conversion programme C<pod2html> or C<pod2latex>
+
+=item 2
+
+A Perl script, which performs various updates.
+
+=item 3
+
+An E-lisp script, interpreted by Emacs in batch mode, because you can
+launche Emacs in batch mode, that is, without opening a window and
+without input from the human-operated keyboard.  This script searches
+for tables inside C<E<lt>preE<gt>> tags in the generated HTML, or
+inside C<verbatim> environments in the generated LATEX file, and
+replace them with real C<E<lt>tableE<gt>> tables or real C<tabular>
+environments.
+
+=item 4
+
+That's all for the HTML file, but for LATEX, you 
+still have to generate C<.dvi> or C<.pdf> files.
+
+=back
+
+=head3 How the E-lisp script works
+
+Ths E-lisp script includes two interactive functions, which 
+are nothing more than wrappers calling a third function
+with the proper parameteres. Even if the script
+is meant to be used in batch mode, it can be useful from time to
+time to call these functions interactively from Emacs, to debug them or to
+add new features.
+
+The script main body is a loop with a regexp search for
+a table horizontal line. Usually, if the search finds nothing,
+this triggers an exception which halts the script. As a result,
+the lines after the end of the loop are not executed, including
+the save-file command. In addition, in a C<makefile>, the script
+ends with a status code indicating a failure and the C<make>
+process stops. So we prefer a search which does not halt execution,
+but which returns an internal value indicating that the process
+must leave the loop. This is achieved by giving a third parameter to the 
+C<re-search-forward> function. As a result, we have to provide a second
+parameter to the function. But this is no big deal, the 
+C<point-max> function is perfect for this purpose.
+
+Each iteration deals with a different table. The iteration uses the following steps:
+
+=over 4
+
+=item 1
+
+The script locates the beginning of the text span that contains the
+table, that is, the C<E<lt>preE<gt>> tag, or the LATEX statement
+C<\begin{verbatim}>.
+
+=item 2
+
+The script places the C<point> inside the table and activates
+the table functions of Emacs (by using C<table-recognize>).
+
+=item 3
+
+The script generates the source of the table in the target language,
+HTML or LATEX.
+
+=item 4
+
+The script locates the end of the text span that contains the table,
+that is, the C<E<lt>/preE<gt>> tag, or the LATEX statement
+C<\end{verbatim}>.
+
+=item 5
+
+The script deletes the C<pre> or C<verbatim> source.
+
+=item 6
+
+The script switches to the buffer with the generated source. It 
+makes a few amendments. For example, for HTML, I do not care about
+the precise amount of space and the exact number of line breaks.
+So the script removes the C<E<amp>nbsp;> entities and the
+C<E<lt>br /E<gt>> tags.
+And for LATEX, the script inserts vertical spaces to prevent the
+table from being glued to the preceding and following paragraphs.
+
+=item 7
+
+The script copies and pastes the generated source into the HTML or LATEX file.
+
+=back
+
+And the script loops, searching a new table to process.
+
+=head3 How the Perl Scripts Works
+
+The Perl scripts executes a few simple modifications, but
+necessary ones.
+
+=head4 F<ajust-html>
+
+The text I translated had a copyright and a trademark notices.
+No problem for the copyright, the POD
+C<EE<lt>copyE<gt>> string gives the proper result.
+But I do not know anything similar for the trademark symbol.
+So the Perl script looks for the C<\bTM\b> regexp with
+word boundaries (so the "ATMOSPHERE" and "HETMAN" words
+will not be modified) and replaces it with the proper
+HTML sequence.
+
+OK, I agree, this means that I parses HTML with regexps.
+And this is I<bad>. If you want to modify the script to
+use C<HTML::Parser>, you are welcome!
+
+Same thing, for the present
+C<read-me.pod> file, the C<\bLATEX\b> regexp is replaced with
+the sequence including vertical shifts of the letters C<A> and
+epsilon C<E>.
+
+=head4 F<ajust-tex>
+
+This script has the same functions as F<ajust-html>, plus a few
+others.
+
+First, for the LATEX file, we switch from C<utf-8> encoding to 
+C<ISO-8859-1> encoding, which was not necessary for HTML.
+
+In the rules I translated, there were several
+references to other paragraphs of the rules, such as:
+
+  (see Short background --- p.1)
+
+I have translated these references in the POD translation and I have
+added C<LE<lt> E<gt>> tags around the paragraph title, while keeping
+the page number. So the generated HTML will contain meaningless page
+numbers, because if you print the rules, your page numbers will vary a
+lot, depending on the font size you use.  On the other hand, the LATEX
+output (C<.dvi> or C<.pdf>) will have stable page numbers, so it is
+worth using the right page numbers in the generated file. LATEX
+provides a function for this purpose: C<\thepageref>, but C<pod2latex>
+does not generate it.  So the Perl script parses the LATEX source to
+insert this function where appropriate.
+
+This is done in two passes. The first pass locates all
+C<\section> statements and similar and stores the
+corresponding label. The second pass locates all references
+
+  (see Short background --- p.1)
+
+extracts the label associated to the paragraph title 
+("Short background" in this case) and replaces the page
+number with the C<\pageref> statement.
+
+Again, this means that you parse a LATEX file with regexps,
+which is as dirty as parsing HTML with regexps. But 
+the LATEX source is a very simple one and therefore
+you can use simple regexps to search for simple patterns
+in a simple source text.
+
+A last remark, which applies not only to my layout system,
+but also to LATEX in general. When a LATEX document contains
+page references, it can happen that some page numbers are
+skewed, because the generation uses an old C<.aux> file.
+This is why the C<latex> or C<pdflatex> command is used twice
+in a row. The first time, its purpose is to refresh the C<.aux>
+file with up-to-date page numbers. The second time, its purpose 
+is to generate the output file with the proper page numbers.
+
+=head2 What next?
+
+Coding in E-lisp is fine, but coding in Perl is better.
+I plan to write a Perl module which would do the same
+as C<table-recognize> and perhaps also C<table-generate>
+(although there are already modules generating 
+HTML tables on CPAN). I do not know yet if this will
+be a module dealing with plain text or a C<pod2html>
+and C<pod2latex> plug-in.
+
+In another direction, the present programmes can be improved.
+For example, for LATEX, I do not like having to switch from the F<read-me>
+filename radix to another radix, F<read-me-1>.
+I must find a way to use a single filename radix all the way along.
+
+=head2 License
+
+The programmes and the additional files are published under the same terms as Perl:
+GNU General Public License (GPL) or Artistic License.

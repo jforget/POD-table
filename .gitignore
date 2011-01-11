@@ -1,0 +1,12 @@
+*~
+*.html
+*.html1
+*.dvi
+*.log
+*.aux
+*.out
+*.pdf
+pod2*
+lisez-moi.tex
+read-me.tex
+tableau

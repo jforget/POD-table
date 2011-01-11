@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Encode;
+
+my ($fichier) = @ARGV;
+open my $f, $fichier
+  or die "ouverture $fichier $!";
+my @source = <$f>;
+close $f
+  or die "fermeture $fichier $!";
+my @dest;
+
+for (@source) {
+  s/1re/1<sup>re<\/sup>/g;
+  s/\bTM\b/<sup>TM<\/sup>/g;
+  s/\bLATEX\b/L<sup>A<\/sup>T<sub>E<\/sub>X/g;
+  push @dest, $_;
+}
+
+open $f, '>', $fichier
+  or die "ouverture $fichier $!";
+for (@dest) {
+  print $f $_;
+}
+close $f
+  or die "fermeture $fichier $!";

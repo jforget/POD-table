@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Encode;
+
+my ($fichier) = @ARGV;
+open my $f, $fichier
+  or die "ouverture $fichier $!";
+my @source = <$f>;
+close $f
+  or die "fermeture $fichier $!";
+my @dest;
+my %ref;
+
+for (@source) {
+
+  if (/\\.*section\*\{(?:\d+\.\s*)?(.*?)\\label\{(.*?)\}/) {
+    my $cle = lc($1);
+    $cle =~ tr/\xc9/\xe9/;
+    $ref{$cle} = $2;
+  }
+}
+
+#print STDERR "Hachage \%ref :\n";
+#for (sort keys %ref) {
+#  print STDERR $_, " -> ", $ref{$_}, "\n";
+#}
+for (@source) {
+  Encode::from_to($_, "utf8", "iso-8859-1");
+
+  s/1re/1\\re{}/g;
+  s/\bTM\b/\\tm{}/g;
+  s/\bLATEX\b/\\LaTeX{}/g;
+
+  if (/\\textsf\{(.*?)\} --- p\.\d+/) {
+    my $ref = $ref{lc($1)};
+    if ($ref) {
+      s/p\.\d+/p\.\\pageref\{$ref\}/;
+      #print STDERR "Modification $_";
+    }
+    else {
+      #print STDERR "Référence pour '$1' introuvable\n";
+    }
+  }
+
+  push @dest, $_;
+}
+
+open $f, '>', $fichier
+  or die "ouverture $fichier $!";
+for (@dest) {
+  print $f $_;
+}
+close $f
+  or die "fermeture $fichier $!";

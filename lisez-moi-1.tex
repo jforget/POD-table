@@ -1,0 +1,59 @@
+\documentclass[a4paper]{article}
+\usepackage[english,frenchb]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage[dvips]{hyperref}
+\usepackage{breakurl}
+
+% marge haute 25.4 - 12 = 13.4 mm
+\topmargin=-12mm
+\headheight=0mm
+\headsep=4mm
+% marge basse 297 - (13.4 + 267 + 4) = 12.6mm
+\textheight=267mm
+
+\oddsidemargin=0mm
+\marginparsep=0mm
+\textwidth=174mm
+\columnsep=8mm
+
+\begin{document}
+%&Latex
+
+\renewcommand{\rmdefault}[0]{ppl}
+\renewcommand{\sfdefault}[0]{phv}
+\renewcommand{\ttdefault}[0]{pcr}
+
+\newcommand{\datenum}{\number\year-%
+\ifnum\month<10\relax0\fi\number\month-%
+\ifnum\day<10\relax0\fi\number\day}
+
+\newcommand{\re}[0]{$^\mathrm{re}$}
+\newcommand{\tm}{$^\mathrm{TM}$}
+\parindent=0mm
+\parskip=2mm
+\parsep=2mm
+
+\catcode`\·=\active	\def·{$\bullet$}
+\catcode`\£=\active	\def£{\pounds}
+\catcode`\«=\active     \def«{<<}
+\catcode`\»=\active     \def»{>>}
+\catcode`\°=\active	\def°{\fr{\degres}}
+
+\pagestyle{myheadings}
+\markright{\upshape\sffamily\kern 8mm\datenum\hfill {\sffamily\bfseries Chaîne d'édition avec tableaux}\kern 12mm\hfill Page }
+
+\newcommand{\textbftt}[1]{{\ttfamily\bfseries{}#1}}
+
+\NoAutoSpaceBeforeFDP
+
+\rmfamily
+\selectlanguage{french}
+\tolerance=1000
+\raggedbottom
+\vskip -3pt
+\input{lisez-moi}
+
+\end{document}
+

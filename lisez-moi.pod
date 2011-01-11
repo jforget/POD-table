@@ -1,0 +1,469 @@
+=head1 LISEZ-MOI
+
+=head2 Présentation du fichier lisez-moi
+
+Ce fichier F<lisez-moi.pod> a un double rôle.
+
+=over 4
+
+=item 1
+
+Expliquer comment fonctionne la chaîne d'édition.
+
+=item 2
+
+Servir de base à une démo de la chaîne d'édition.
+
+=back
+
+En d'autres termes, soit vous lisez le POD dans le texte pour
+savoir ce qui va se passer, soit vous lisez le HTML ou le PDF
+généré pour savoir ce qui vient de se passer.
+
+=head2 Très léger historique
+
+J'ai développé cette chaîne d'édition lorsque je suis tombé sur
+un jeu de simulation dont les règles étaient disponibles,
+en anglais, sur le web. Comme j'ai estimé que ce jeu méritait
+une diffusion plus importante et comme ces règles étaient de longueur
+raisonnable, j'ai décidé de le traduire en français.
+
+Comme de nombreux programmeurs Perl, j'aime utiliser le format POD,
+car il est simple et il permet de faire l'essentiel : chapitres,
+listes, liens, caractères gras et italiques. La seule fonction
+de base qui manque, ce sont les tableaux. Or il y avait
+plusieurs tableaux dans les règles à traduire.
+Pour obtenir un tableau en POD, il y a toujours la possibilité de dessiner
+ce tableau en tant que texte préformatté, ainsi :
+
+  .-----.-----.-----.
+  |  8  |  1  |  6  |
+  .-----.-----.-----.
+  |  3  |  5  |  7  |
+  .-----.-----.-----.
+  |  4  |  9  |  2  |
+  .-----.-----.-----.
+
+Le résultat est satisfaisant pour l'affichage par C<perldoc>, mais
+avoir la même chose en HTML avec des balises C<E<lt>preE<gt>> ou
+en LATEX avec un environnement C<verbatim>, c'est un peu
+frustrant. C'est tout de même mieux d'avoir :
+
+  +-----+-----+-----+
+  |  8  |  1  |  6  |
+  +-----+-----+-----+
+  |  3  |  5  |  7  |
+  +-----+-----+-----+
+  |  4  |  9  |  2  |
+  +-----+-----+-----+
+
+(évidemment, si vous regardez cela par C<perldoc> ou en édition sur
+le document POD, vous ne voyez pas grande différence).
+
+Il y a bien le module C<Pseudo::POD>, qui permet de générer de belles
+tables en HTML, LATEX et autres formats esthétiques et évolués, mais 
+côté édition sous Emacs / vi / autre et côté affichage sous
+C<perldoc>, le résultat est désepérant.
+
+Une autre solution consiste à éditer sous Emacs le HTML généré ou
+le LATEX généré et à remplacer le tableau en art ASCII par un tableau
+en format correct. Voir les fonctions C<table-recognize> et 
+C<table-generate>, ainsi que les autres fonctions 
+C<table->I<xxx>. L'inconvénient est que c'est incompatible avec
+une génération automatisée et un F<makefile>.
+
+=head2 Comment écrire des tableaux en POD
+
+Vous pouvez vous reporter au chapitre sur les tables
+dans la documentation d'Emacs. Toutefois, voici un aperçu
+de la façon d'écrire un tableau, indépendamment de l'éditeur
+de texte.
+
+Le tableau doit être compris par C<pod2html> et C<pod2latex>
+comme du texte préformatté, c'est-à-dire que chaque ligne
+doit commencer par au moins un espace.
+
+Mais ce n'est pas tout. Le tableau doit également être reconnu
+en tant que tableau par Emacs. Pour cela, les traits du tableau
+doivent être composés de signes moins C<->, de barres verticales
+C<|> (I<pipes>) et les jonctions entre lignes doivent être
+des signes plus C<+>.
+
+I<Note :> pour des raisons techniques, dans les exemples ci-dessous,
+les jonctions entre lignes seront des points, mais il vous faudra imaginer
+que ce sont des plus.
+
+=head3 Exemple de base
+
+Dans ce tableau, toutes les cellules ont la même dimension.
+
+  .---.---.---.
+  | 8 | 1 | 6 |
+  .---.---.---.
+  | 3 | 5 | 7 |
+  .---.---.---.
+  | 4 | 9 | 2 |
+  .---.---.---.
+
+ce qui donne :
+
+  +---+---+---+
+  | 8 | 1 | 6 |
+  +---+---+---+
+  | 3 | 5 | 7 |
+  +---+---+---+
+  | 4 | 9 | 2 |
+  +---+---+---+
+
+=head3 Cellule allongée
+
+Dans ce tableau, il y a un regroupement de cellules, appartenant toutes à la même ligne
+
+  .----.----.----.----.----.----.----.----.
+  | H  |                             | He |
+  .----.----.----.----.----.----.----.----.
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  .----.----.----.----.----.----.----.----.
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  .----.----.----.----.----.----.----.----.
+
+ce qui donne
+
+  +----+----+----+----+----+----+----+----+
+  | H  |                             | He |
+  +----+----+----+----+----+----+----+----+
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  +----+----+----+----+----+----+----+----+
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  +----+----+----+----+----+----+----+----+
+
+Notons que pour la ligne du haut, les jonctions de ligne ne sont pas
+vraiment des jonctions de lignes et peuvent être remplacées par des tirets
+indiquant une ligne simplement horizontale
+
+  .----.-----------------------------.----.
+  | H  |                             | He |
+  .----.----.----.----.----.----.----.----.
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  .----.----.----.----.----.----.----.----.
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  .----.----.----.----.----.----.----.----.
+
+ce qui donne
+
+  +----+-----------------------------+----+
+  | H  |                             | He |
+  +----+----+----+----+----+----+----+----+
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  +----+----+----+----+----+----+----+----+
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  +----+----+----+----+----+----+----+----+
+
+=head3 Cellule agrandie
+
+Dans le tableau suivant, certaines cellules s'étendent verticalement.
+Par exemple
+
+  .------------------.--------------.------.------.
+  |                  | Crétacé      |  130 |   65 |
+  |                  .--------------.------.------.
+  | Secondaire       | Jurassique   |  200 |  130 |
+  |                  .--------------.------.------.
+  |                  | Trias        |  235 |  200 |
+  .------------------.--------------.------.------.
+  |                  | Permien      |  280 |  235 |
+  |                  .--------------.------.------.
+  |                  | Carbonifère  |  350 |  280 |
+  |                  .--------------.------.------.
+  |                  | Dévonien     |  400 |  350 |
+  | Primaire         .--------------.------.------.
+  |                  | Silurien     |  440 |  400 |
+  |                  .--------------.------.------.
+  |                  | Ordovicien   |  500 |  440 |
+  |                  .--------------.------.------.
+  |                  | Cambrien     |  540 |  500 |
+  .------------------.--------------.------.------.
+
+Ce qui S<donne :>
+
+  +------------------+--------------+------+------+
+  |                  | Crétacé      |  130 |   65 |
+  |                  +--------------+------+------+
+  | Secondaire       | Jurassique   |  200 |  130 |
+  |                  +--------------+------+------+
+  |                  | Trias        |  235 |  200 |
+  +------------------+--------------+------+------+
+  |                  | Permien      |  280 |  235 |
+  |                  +--------------+------+------+
+  |                  | Carbonifère  |  350 |  280 |
+  |                  +--------------+------+------+
+  |                  | Dévonien     |  400 |  350 |
+  | Primaire         +--------------+------+------+
+  |                  | Silurien     |  440 |  400 |
+  |                  +--------------+------+------+
+  |                  | Ordovicien   |  500 |  440 |
+  |                  +--------------+------+------+
+  |                  | Cambrien     |  540 |  500 |
+  +------------------+--------------+------+------+
+
+Si vous consultez le résultat HTML, vous constatez que la génération
+s'est bien effectuée. En revanche, si vous visualisez le résultat de la
+génération LATEX, vous constatez un gros S<problème :> la mention
+de l'ère primaire a disparu. Cette mention est en effet dans le prolongement
+d'une ligne horizontale et le générateur de table LATEX ne sait pas
+traiter convenablement ce cas de figure. La solution consiste donc
+à décaler le mot S<ainsi :>
+
+  .------------------.--------------.------.------.
+  |                  | Crétacé      |  130 |   65 |
+  |                  .--------------.------.------.
+  | Secondaire       | Jurassique   |  200 |  130 |
+  |                  .--------------.------.------.
+  |                  | Trias        |  235 |  200 |
+  .------------------.--------------.------.------.
+  |                  | Permien      |  280 |  235 |
+  |                  .--------------.------.------.
+  |                  | Carbonifère  |  350 |  280 |
+  |                  .--------------.------.------.
+  | Primaire         | Dévonien     |  400 |  350 |
+  |                  .--------------.------.------.
+  |                  | Silurien     |  440 |  400 |
+  |                  .--------------.------.------.
+  |                  | Ordovicien   |  500 |  440 |
+  |                  .--------------.------.------.
+  |                  | Cambrien     |  540 |  500 |
+  .------------------.--------------.------.------.
+
+ce qui donne S<alors :>
+
+  +------------------+--------------+------+------+
+  |                  | Crétacé      |  130 |   65 |
+  |                  +--------------+------+------+
+  | Secondaire       | Jurassique   |  200 |  130 |
+  |                  +--------------+------+------+
+  |                  | Trias        |  235 |  200 |
+  +------------------+--------------+------+------+
+  |                  | Permien      |  280 |  235 |
+  |                  +--------------+------+------+
+  |                  | Carbonifère  |  350 |  280 |
+  |                  +--------------+------+------+
+  | Primaire         | Dévonien     |  400 |  350 |
+  |                  +--------------+------+------+
+  |                  | Silurien     |  440 |  400 |
+  |                  +--------------+------+------+
+  |                  | Ordovicien   |  500 |  440 |
+  |                  +--------------+------+------+
+  |                  | Cambrien     |  540 |  500 |
+  +------------------+--------------+------+------+
+
+La génération LATEX donne le bon résultat, tandis que la génération
+HTML ne propose plus un alignement au centre.
+
+=head2 Fonctionnement de la chaîne d'édition
+
+La chaîne d'édition fonctionne donc ainsi.
+
+=over 4
+
+=item 1
+
+Le programme standard de conversion C<pod2html> ou C<pod2latex>
+
+=item 2
+
+Un script Perl, qui fait quelques adaptations annexes.
+
+=item 3
+
+Un script E-lisp, interprété par Emacs en mode batch, car on peut
+utiliser Emacs en mode batch, c'est-à-dire sans affichage de fenêtre
+d'édition et sans intervention d'un opérateur humain au clavier.
+Ce script recherche les
+tableaux dans des balises C<E<lt>preE<gt>> du HTML généré, ou dans des
+environnements C<verbatim> dans le LATEX généré et qui les remplace
+par de vrais tableaux C<E<lt>tableE<gt>> ou environnements C<tabular>.
+
+=item 4
+
+Rien dans le cas de la version HTML, ou bien la génération du fichier
+C<.dvi> ou du fichier C<.pdf> dans le cas de LATEX.
+
+=back
+
+=head3 Fonctionnement du script E-lisp
+
+Le script E-lisp comporte deux fonctions interactives, l'une pour
+HTML, l'autre pour LATEX. Ces deux fonctions se contentent d'en
+appeler une troisième, avec les bons paramètres. Les deux premières
+fonctions peuvent être appelées interactivement depuis une session
+Emacs. Cela peut être utile de les appeler en interactif lorsque l'on
+veut corriger ou faire évoluer le script.
+
+Le corps du script est une boucle basée sur une recherche de texte, 
+pour trouver un trait horizontal de tableau. Habituellement, si la recherche
+échoue, cela interrompt l'exécution du script. Résultat, les fonctions
+de la fin du script, comme la sauvegarde du fichier modifié, ne sont pas
+exécutées. De plus, dans un C<makefile>,
+le code statut est positionné à une valeur d'échec et le C<make> s'interrompt.
+On préfère donc une recherche qui ne fasse pas planter l'exécution, mais
+qui renvoie un code interne au script, pour quitter la boucle.
+Cela se fait par le biais du troisième paramètre de la fonction
+C<re-search-forward>. Du coup, on est obligé de fournir un deuxième
+paramètre à la fonction. Mais ce n'est pas grave, la fonction
+C<point-max> fournit la valeur désirée.
+
+Chaque itération traite un tableau différent du fichier. Cette itération
+est composée des étapes suivantes :
+
+=over 4
+
+=item 1
+
+Le script repère le début du source concernant le tableau,
+c'est-à-dire la balise C<E<lt>preE<gt>>, ou bien l'instruction
+C<\begin{verbatim}>.
+
+=item 2
+
+Le script se positionne à l'intérieur du tableau et active (par
+C<table-recognize>) les fonctionnalités d'Emacs spécifiques aux
+tableaux.
+
+=item 3
+
+Le script génère le source du tableau dans le langage
+cible, HTML ou LATEX.
+
+=item 4
+
+Le script repère la fin du source concernant le tableau, c'est-à-dire la
+balise C<E<lt>/preE<gt>>, ou bien l'instruction C<\end{verbatim}>.
+
+=item 5
+
+Le script détruit le source C<pre> ou C<verbatim>.
+
+=item 6
+
+Le script bascule vers le tampon où se trouve le source généré. Il l'adapte
+quelque peu. Pour HTML, je ne suis pas intéressé à avoir
+strictement la même disposition des blancs et des passages à la ligne dans
+le tableau obtenu. Le script enlève donc les C<E<amp>nbsp;> et les 
+C<E<lt>br /E<gt>> et les remplace par des espaces normaux.
+Pour LATEX, le script insère des espaces verticaux, pour éviter que
+le tableau soit collé aux paragraphes précédent et suivant.
+
+=item 7
+
+Le script copie-colle le source généré dans le fichier HTML ou LATEX
+complet.
+
+=back
+
+Et on boucle à la recherche d'un nouveau tableau.
+
+=head3 Scripts Perl
+
+Les scripts Perl servent à effectuer quelques adaptations
+simples, mais néanmoins nécessaires.
+
+=head4 F<ajust-html>
+
+Le script F<ajust-html> effectue quelques substitutions de chaînes de
+caractères. La règle de jeu que j'ai traduite comportait la mention
+d'un I<copyright> et d'une marque déposée. Pour le I<copyright>, pas
+de problème, la chaîne POD C<EE<lt>copyE<gt>> donne un résultat
+correct E<copy>.  Mais il n'y a rien de tel pour TM. Le script Perl
+recherche donc l'expression régulière C<\bTM\b>, constituant un mot
+complet (évitant ainsi de perturber des mots comme S<« ATMOSPHERE »> ou
+S<« HETMAN »>) et la remplace par l'équivalent en HTML ou en LATEX.
+
+Je sais, cela revient à analyser du HTML avec des expressions
+régulières et, je le sais également, ce n'est pas bien.
+Si vous voulez utilisez C<HTML::Parser> pour ce faire,
+libre à vous d'adapter ce script pour qu'il vérifie vos
+critères de qualité.
+
+De même, l'abréviation de S<« première »> C<1Z<>re>
+est adaptée pour mettre en exposant le C<re>.
+
+Finalement, un besoin qui n'existait pas dans la règle de jeu, mais
+qui est apparu pour le présent fichier C<lisez-moi.pod>, on remplace
+l'expression rationnelle C<\bLATEX\b> par son équivalent avec le
+décalage traditionnel en hauteur du C<A> et du epsilon C<E>.
+
+=head4 F<ajust-tex>
+
+Ce script a les mêmes fonctionnalités que F<ajust-html>, plus
+quelques autres.
+
+Tout d'abord, dans le cas du format LATEX, on passe de l'encodage
+C<utf-8> à l'encodage C<ISO-8859-1>, ce qui n'était pas nécessaire
+pour générer le fichier HTML.
+
+Dans le fichier de règle à traduire, il y avait des renvois
+à d'autres paragraphes, du genre :
+
+  (cf. Très léger historique --- p.1)
+
+Dans le fichier POD traduit, j'ai encadré le titre avec des balises
+C<LE<lt> E<gt>> et j'ai conservé la mention du numéro de page.
+
+Dans le fichier HTML produit, cela a donné des liens hypertexte,
+comme attendu, ainsi que des numéros de page, qui n'ont aucune
+signification, puisque l'affichage se fait avec une fonte de 
+taille variable au gré de l'utilisateur, donc avec de grandes variations dans les numéros
+de page. En revanche, la sortie en LATEX (C<.dvi> ou C<.pdf>)
+aura une pagination stable, donc autant avoir les bons numéros
+de page dans le fichier généré. Il existe une fonction
+C<\thepageref> en LATEX, mais C<pod2latex> ne la génère
+pas. Donc le script Perl le fait à la place.
+
+Cela se fait en deux passes. La première passe relève toutes
+les instructions C<\section> ou apparentées et note l'étiquette
+associée. La seconde passe relève toutes les références 
+
+  (cf. Très léger historique --- p.1)
+
+recherche l'étiquette associée au titre de paragraphe 
+(S<« Très> léger S<historique »> dans ce cas) et 
+remplace le numéro de page par l'instruction C<\pageref>
+correspondante.
+
+Encore une fois, cela revient à découper un source LATEX à 
+coup d'expressions régulières, ce qui n'est pas plus propre
+que la même action sur du HTML. Encore une fois, le source LATEX
+comporte très peu de fioritures et on peut faire des recherches
+simples pour détecter des motifs simples dans un texte simple.
+
+Une dernière remarque, qui ne s'applique pas seulement à ma chaîne
+d'édition, mais à LATEX en général : lorsqu'un document produit par LATEX
+comporte des C<\pageref>, il peut se produire
+que certains numéros de page soient décalés, à cause de l'ajout
+par-ci par-là de quelques lignes. C'est pour cela que l'on
+lance deux fois de suite la commande C<latex> ou C<pdflatex>. La
+première passe permet d'alimenter le fichier C<.aux> avec des
+numéros de page corrects, la seconde passe permet d'insérer ces
+numéros de page corrects dans le texte en sortie.
+
+=head2 Et après ?
+
+Programmer en E-lisp, c'est bien, mais programmer en Perl,
+c'est mieux. J'ai donc l'intention d'écrire un module
+Perl qui serait l'équivalent des commandes 
+C<table-recognize> et éventuellement aussi C<table-generate>
+(quoiqu'il existe déjà des modules générant le source HTML
+pour des tableaux). Je ne sais pas
+encore si cela sera un module généraliste ou un greffon
+pour C<pod2html> et C<pod2latex>. 
+
+Pour la présente chaîne d'édition, il reste quelques améliorations.
+Par exemple, pour la génération LATEX, cela ne me plaît pas d'avoir à basculer d'un
+premier nom de base F<lisez-moi> vers un second nom
+de base F<lisez-moi-1>. Il faudra que je trouve comment
+simplifier cela.
+
+=head2 Licence
+
+Les programmes et les fichies annexes sont diffusés sous les mêmes conditions que Perl :
+au choix licence GPL et licence artistique.
