@@ -58,7 +58,8 @@ Having the following is much better:
   +-----+-----+-----+
 
 (Of course, if you read this using C<perldoc> or you favourite
-text editor, you will not see much difference).
+text editor, or if you browse it on the Git Hub website,
+you will not see much difference).
 
 There is the C<Pseudo::POD> module, which allows us to generate
 pretty tables in HTML, LATEX and other advanced display formats,
@@ -91,6 +92,176 @@ must be plus signs C<+>.
 I<Note:> For technical reasons, I will show examples below, where
 the line junctions are dots instead of plus signs. Just imagine
 they are plus signs.
+
+=head3 Basic Example
+
+In this table, all cells have the same size.
+
+  .----.----.----.----.
+  | 13 |  2 |  3 | 16 |
+  .----.----.----.----.
+  |  1 | 14 | 15 |  4 |
+  .----.----.----.----.
+  |  8 | 11 | 10 |  5 |
+  .----.----.----.----.
+  | 12 |  7 |  6 |  9 |
+  .----.----.----.----.
+
+which results in:
+
+  +----+----+----+----+
+  | 13 |  2 |  3 | 16 |
+  +----+----+----+----+
+  |  1 | 14 | 15 |  4 |
+  +----+----+----+----+
+  |  8 | 11 | 10 |  5 |
+  +----+----+----+----+
+  | 12 |  7 |  6 |  9 |
+  +----+----+----+----+
+
+=head3 Wide Cell
+
+In this table, several cells from the same row have
+been merged into a wide cell.
+
+  .----.----.----.----.----.----.----.----.
+  | H  |                             | He |
+  .----.----.----.----.----.----.----.----.
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  .----.----.----.----.----.----.----.----.
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  .----.----.----.----.----.----.----.----.
+
+which results in:
+
+  +----+----+----+----+----+----+----+----+
+  | H  |                             | He |
+  +----+----+----+----+----+----+----+----+
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  +----+----+----+----+----+----+----+----+
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  +----+----+----+----+----+----+----+----+
+
+Yet, for the upper line, the line junctions are not really line
+junctions. Therefore, the plus signs can be replaced by
+dashes, for an horizontal plain line.
+
+  .----.-----------------------------.----.
+  | H  |                             | He |
+  .----.----.----.----.----.----.----.----.
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  .----.----.----.----.----.----.----.----.
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  .----.----.----.----.----.----.----.----.
+
+which results in:
+
+  +----+-----------------------------+----+
+  | H  |                             | He |
+  +----+----+----+----+----+----+----+----+
+  | Li | Be | B  | C  | N  | O  | F  | Ne |
+  +----+----+----+----+----+----+----+----+
+  | Na | Mg | Al | Si | P  | S  | Cl | Ar |
+  +----+----+----+----+----+----+----+----+
+
+=head3 Heightened Cell
+
+In the following table, some cells are the result of a merger
+of basic cells from the same column. For example:
+
+  .------------------.--------------.------.------.
+  |                  | Cretaceous   |  130 |   65 |
+  |                  .--------------.------.------.
+  | Secondary        | Jurassic     |  200 |  130 |
+  |                  .--------------.------.------.
+  |                  | Triassic     |  235 |  200 |
+  .------------------.--------------.------.------.
+  |                  | Permian      |  280 |  235 |
+  |                  .--------------.------.------.
+  |                  | Carboniferous|  350 |  280 |
+  |                  .--------------.------.------.
+  |                  | Devonian     |  400 |  350 |
+  | Primary          .--------------.------.------.
+  |                  | Silurian     |  440 |  400 |
+  |                  .--------------.------.------.
+  |                  | Ordovician   |  500 |  440 |
+  |                  .--------------.------.------.
+  |                  | Cambrian     |  540 |  500 |
+  .------------------.--------------.------.------.
+
+results in:
+
+  +------------------+--------------+------+------+
+  |                  | Cretaceous   |  130 |   65 |
+  |                  +--------------+------+------+
+  | Secondary        | Jurassic     |  200 |  130 |
+  |                  +--------------+------+------+
+  |                  | Triassic     |  235 |  200 |
+  +------------------+--------------+------+------+
+  |                  | Permian      |  280 |  235 |
+  |                  +--------------+------+------+
+  |                  | Carboniferous|  350 |  280 |
+  |                  +--------------+------+------+
+  |                  | Devonian     |  400 |  350 |
+  | Primary          +--------------+------+------+
+  |                  | Silurian     |  440 |  400 |
+  |                  +--------------+------+------+
+  |                  | Ordovician   |  500 |  440 |
+  |                  +--------------+------+------+
+  |                  | Cambrian     |  540 |  500 |
+  +------------------+--------------+------+------+
+
+Note that if you read a LATEX-generated version, there is a problem:
+the word "Primary" has disappeared. This is because it is aligned
+with a partial horizontal line and the LATEX table generator cannot
+cope with this situation. On the other side, the HTML version
+is fine. To obtain a better version in LATEX, you can shift the
+word one line upwards or downward:
+
+  .------------------.--------------.------.------.
+  |                  | Cretaceous   |  130 |   65 |
+  |                  .--------------.------.------.
+  | Secondary        | Jurassic     |  200 |  130 |
+  |                  .--------------.------.------.
+  |                  | Triassic     |  235 |  200 |
+  .------------------.--------------.------.------.
+  |                  | Permian      |  280 |  235 |
+  |                  .--------------.------.------.
+  |                  | Carboniferous|  350 |  280 |
+  |                  .--------------.------.------.
+  | Primary          | Devonian     |  400 |  350 |
+  |                  .--------------.------.------.
+  |                  | Silurian     |  440 |  400 |
+  |                  .--------------.------.------.
+  |                  | Ordovician   |  500 |  440 |
+  |                  .--------------.------.------.
+  |                  | Cambrian     |  540 |  500 |
+  .------------------.--------------.------.------.
+
+which results in:
+
+  +------------------+--------------+------+------+
+  |                  | Cretaceous   |  130 |   65 |
+  |                  +--------------+------+------+
+  | Secondary        | Jurassic     |  200 |  130 |
+  |                  +--------------+------+------+
+  |                  | Triassic     |  235 |  200 |
+  +------------------+--------------+------+------+
+  |                  | Permian      |  280 |  235 |
+  |                  +--------------+------+------+
+  |                  | Carboniferous|  350 |  280 |
+  |                  +--------------+------+------+
+  | Primary          | Devonian     |  400 |  350 |
+  |                  +--------------+------+------+
+  |                  | Silurian     |  440 |  400 |
+  |                  +--------------+------+------+
+  |                  | Ordovician   |  500 |  440 |
+  |                  +--------------+------+------+
+  |                  | Cambrian     |  540 |  500 |
+  +------------------+--------------+------+------+
+
+The downside is that now, in the HTML version, the "Primary" word
+is no longer center-aligned vertically.
 
 =head2 How It Works
 
