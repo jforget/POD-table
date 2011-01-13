@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 LISEZ-MOI
 
 =head2 Présentation du fichier lisez-moi
@@ -262,6 +264,36 @@ ce qui donne S<alors :>
 
 La génération LATEX donne le bon résultat, tandis que la génération
 HTML ne propose plus un alignement au centre.
+
+Allez-y mollo avec les extensions verticales. Dans certains cas,
+la fonction C<table-generate> d'Emacs s'emmêle les pinceaux.
+Par exemple, S<avec :>
+
+  .----.----.----.
+  |  1 | 11 | 21 |
+  |  2 | 12 | 22 |
+  |  3 .----.----.
+  |  4 | 14 | 24 |
+  .----. 15 | 25 |
+  |  6 | 16 | 26 |
+  |  7 .----. 27 |
+  |  8 | 18 | 28 |
+  .----.----.----.
+
+qui a pour S<résultat :>
+
+  +----+----+----+
+  |  1 | 11 | 21 |
+  |  2 | 12 | 22 |
+  |  3 +----+----+
+  |  4 | 14 | 24 |
+  +----+ 15 | 25 |
+  |  6 | 16 | 26 |
+  |  7 +----+ 27 |
+  |  8 | 18 | 28 |
+  +----+----+----+
+
+En LATEX, le résultat est correct, mais pas en HTML.
 
 =head2 Fonctionnement de la chaîne d'édition
 
