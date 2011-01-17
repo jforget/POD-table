@@ -45,7 +45,7 @@ show a table by using preformatted text, as this:
 
 The result is acceptable when using C<perldoc> to display the POD
 or when reading it in your favourite text editor, but the same thing
-in HTML with E<lt>preE<gt> tags or in
+in HTML with C<E<lt>preE<gt>> tags or in
 LATEX within a C<verbatim> environment is quite frustrating.
 Having the following is much better:
 
@@ -70,9 +70,13 @@ C<perldoc>, the result is disappointing.
 Another solution consists in generating the HTML / LATEX
 file, and then edit it using Emacs, to replace the ASCII-art
 table with a proper table. See the C<table-recognize> and 
-C<table-generate> functions, as well as the other
+C<table-generate-source> functions, as well as the other
 C<table->I<xxx> functions. The downside is that this is incompatible
 with automatic processing and F<makefiles>.
+
+This is why I created these scripts, to layout nice tables
+from a F<makefile> procedure, without requiring any intervention
+once C<make> is running.
 
 =head2 How to write tables in your editor
 
@@ -261,7 +265,9 @@ which results in:
   +------------------+--------------+------+------+
 
 The downside is that now, in the HTML version, the "Primary" word
-is no longer center-aligned vertically.
+is no longer center-aligned vertically. I must admit that the absence
+of vertical alignment would not have been noticed if my script had
+not removed all C<E<lt>br /E<gt>> tags.
 
 Go easy on the rowspans. In some cases, the 
 C<table-generate> function gets confused while
@@ -293,6 +299,96 @@ yields:
 
 In LATEX, the result is correct, but not so in HTML.
 
+=head3 Two-Dimension Extensions
+
+According to Emacs' documentation, you can have
+cells that spans several columns and several rows at the same time,
+provided they are rectangular. For example,
+
+  .--.-----------------------------------------------.--.
+  |H |                                               |He|
+  .--.--.                             .--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+is forbidden. On the other side, you can have:
+ 
+  .--.--.-----------------------------.--------------.--.
+  |H |  |                             |              |He|
+  .--.--.                             .--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+or:
+
+  .--.-----------------------------------------------.--.
+  |H |                                               |He|
+  .--.--.-----------------------------.--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+which give respectively:
+
+  +--+--+-----------------------------+--------------+--+
+  |H |  |                             |              |He|
+  +--+--+                             +--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+  +--+-----------------------------------------------+--+
+  |H |                                               |He|
+  +--+--+-----------------------------+--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+Actually, the first possibility, with the one empty cell, is still
+recognised by Emacs as a table, although there is some confusion
+about the extent of this cell. The HTML generation gives 
+incorrect results, while the LATEX generation gives a 
+quite acceptable result. See for yourself:
+
+  +--+-----------------------------------------------+--+
+  |H |                                               |He|
+  +--+--+                             +--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ 
 =head2 How It Works
 
 The layout system functions with the following steps.

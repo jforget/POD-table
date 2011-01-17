@@ -70,9 +70,13 @@ C<perldoc>, le résultat est désepérant.
 Une autre solution consiste à éditer sous Emacs le HTML généré ou
 le LATEX généré et à remplacer le tableau en art ASCII par un tableau
 en format correct. Voir les fonctions C<table-recognize> et 
-C<table-generate>, ainsi que les autres fonctions 
+C<table-generate-source>, ainsi que les autres fonctions 
 C<table->I<xxx>. L'inconvénient est que c'est incompatible avec
 une génération automatisée et un F<makefile>.
+
+J'ai donc écrit ces divers scripts pour créer de beaux tableaux
+dans un F<makefile>, sans avoir besoin d'intervenir une fois 
+le C<make> lancé.
 
 =head2 Comment écrire des tableaux en POD
 
@@ -263,7 +267,9 @@ ce qui donne S<alors :>
   +------------------+--------------+------+------+
 
 La génération LATEX donne le bon résultat, tandis que la génération
-HTML ne propose plus un alignement au centre.
+HTML ne propose plus un alignement au centre. Je dois reconnaître que
+l'absence d'alignement vertical n'aurait pas été remarquée si 
+mon script n'avait pas supprimé les balises C<E<lt>br /E<gt>>.
 
 Allez-y mollo avec les extensions verticales. Dans certains cas,
 la fonction C<table-generate> d'Emacs s'emmêle les pinceaux.
@@ -294,6 +300,96 @@ qui a pour S<résultat :>
   +----+----+----+
 
 En LATEX, le résultat est correct, mais pas en HTML.
+
+=head3 Extension dans les deux sens
+
+Selon la documentation d'Emacs,
+il est possible d'avoir des cellules s'étendant sur plusieurs colonnes et plusieurs
+lignes, à condition que ces cellules restent rectangulaires. Par exemple,
+
+  .--.-----------------------------------------------.--.
+  |H |                                               |He|
+  .--.--.                             .--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+est interdit. En revanche, il est possible S<d'avoir :>
+
+  .--.--.-----------------------------.--------------.--.
+  |H |  |                             |              |He|
+  .--.--.                             .--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+ou bien
+
+  .--.-----------------------------------------------.--.
+  |H |                                               |He|
+  .--.--.-----------------------------.--.--.--.--.--.--.
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  .--.--.                             .--.--.--.--.--.--.
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  .--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.
+
+qui donnent S<respectivement :>
+
+  +--+--+-----------------------------+--------------+--+
+  |H |  |                             |              |He|
+  +--+--+                             +--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+
+  +--+-----------------------------------------------+--+
+  |H |                                               |He|
+  +--+--+-----------------------------+--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+En fait, la première possibilité, avec la cellule unique, est quand même reconnue
+comme une table, même si Emacs s'y prend mal pour déterminer l'étendue des cellules.
+La génération HTML donne des résultats incorrects, tandis que la génération LATEX
+donne quelque chose de tout-à-fait acceptable, voyez S<plutôt :>
+
+  +--+-----------------------------------------------+--+
+  |H |                                               |He|
+  +--+--+                             +--+--+--+--+--+--+
+  |Li|Be|                             |B |C |N |O |F |Ne|
+  +--+--+                             +--+--+--+--+--+--+
+  |Na|Mg|                             |Al|Si|P |S |Cl|Ar|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |K |Ca|Sc|Ti|V |Cr|Mn|Fe|Co|Ni|Cu|Zn|Ga|Ge|As|Se|Br|Kr|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |Rb|Sr|Y |Zr|Nb|Mo|Tc|Ru|Rh|Pd|Ag|Cd|In|Sn|Sb|Te|I |Xe|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 
 =head2 Fonctionnement de la chaîne d'édition
 
