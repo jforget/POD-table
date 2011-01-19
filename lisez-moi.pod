@@ -549,13 +549,7 @@ de problème, la chaîne POD C<EE<lt>copyE<gt>> donne un résultat
 correct E<copy>.  Mais il n'y a rien de tel pour TM. Le script Perl
 recherche donc l'expression régulière C<\bTM\b>, constituant un mot
 complet (évitant ainsi de perturber des mots comme S<« ATMOSPHERE »> ou
-S<« HETMAN »>) et la remplace par l'équivalent en HTML ou en LATEX.
-
-Je sais, cela revient à analyser du HTML avec des expressions
-régulières et, je le sais également, ce n'est pas bien.
-Si vous voulez utilisez C<HTML::Parser> pour ce faire,
-libre à vous d'adapter ce script pour qu'il vérifie vos
-critères de qualité.
+S<« HETMAN »> ou surtout S<« HTML »>) et la remplace par l'équivalent en HTML ou en LATEX.
 
 De même, l'abréviation de S<« première »> C<1Z<>re>
 est adaptée pour mettre en exposant le C<re>.
@@ -603,9 +597,9 @@ recherche l'étiquette associée au titre de paragraphe
 remplace le numéro de page par l'instruction C<\pageref>
 correspondante.
 
-Encore une fois, cela revient à découper un source LATEX à 
+Cela revient à découper un source LATEX à 
 coup d'expressions régulières, ce qui n'est pas plus propre
-que la même action sur du HTML. Encore une fois, le source LATEX
+que la même action sur du HTML. Mais le source LATEX
 comporte très peu de fioritures et on peut faire des recherches
 simples pour détecter des motifs simples dans un texte simple.
 

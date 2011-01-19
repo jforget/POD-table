@@ -544,12 +544,9 @@ C<EE<lt>copyE<gt>> string gives the proper result.
 But I do not know anything similar for the trademark symbol.
 So the Perl script looks for the C<\bTM\b> regexp with
 word boundaries (so the "ATMOSPHERE" and "HETMAN" words
+and especially the "HTML" acronym
 will not be modified) and replaces it with the proper
 HTML sequence.
-
-OK, I agree, this means that I parses HTML with regexps.
-And this is I<bad>. If you want to modify the script to
-use C<HTML::Parser>, you are welcome!
 
 Same thing, for the present
 C<read-me.pod> file, the C<\bLATEX\b> regexp is replaced with
@@ -590,7 +587,7 @@ extracts the label associated to the paragraph title
 ("Short background" in this case) and replaces the page
 number with the C<\pageref> statement.
 
-Again, this means that you parse a LATEX file with regexps,
+This means that you parse a LATEX file with regexps,
 which is as dirty as parsing HTML with regexps. But 
 the LATEX source is a very simple one and therefore
 you can use simple regexps to search for simple patterns

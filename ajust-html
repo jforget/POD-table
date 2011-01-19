@@ -3,25 +3,37 @@
 use strict;
 use warnings;
 use Encode;
+use HTML::TokeParser ();
 
 my ($fichier) = @ARGV;
-open my $f, $fichier
-  or die "ouverture $fichier $!";
-my @source = <$f>;
-close $f
-  or die "fermeture $fichier $!";
-my @dest;
 
-for (@source) {
-  s/1re/1<sup>re<\/sup>/g;
-  s/\bTM\b/<sup>TM<\/sup>/g;
-  s/\bLATEX\b/L<sup>A<\/sup>T<sub>E<\/sub>X/g;
-  push @dest, $_;
+my $pa = HTML::TokeParser->new($fichier);
+my @sortie;
+
+while (my $t = $pa->get_token) {
+  if ($t->[0] eq 'T') {
+    my $text = $t->[1];
+    #print STDERR "avant : $text";
+    $text =~ s/1re/1<sup>re<\/sup>/g;
+    $text =~ s/\bTM\b/<sup>TM<\/sup>/g;
+    $text =~ s/\bLATEX\b/L<sup>A<\/sup>T<sub>E<\/sub>X/g;
+    #print STDERR "après : $text";
+    push @sortie, $text;
+  }
+  elsif ($t->[0] eq 'S') {
+    push @sortie, $t->[4];
+  }
+  elsif ($t->[0] eq 'E' or $t->[0] eq 'PI') {
+    push @sortie, $t->[2];
+  }
+  elsif ($t->[0] eq 'C' or $t->[0] eq 'D') {
+    push @sortie, $t->[1];
+  }
 }
 
-open $f, '>', $fichier
+open my $f, '>', $fichier
   or die "ouverture $fichier $!";
-for (@dest) {
+for (@sortie) {
   print $f $_;
 }
 close $f
