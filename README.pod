@@ -78,6 +78,47 @@ This is why I created these scripts, to layout nice tables
 from a F<makefile> procedure, without requiring any intervention
 once C<make> is running.
 
+=head2 Installation
+
+You just need to download the repository and store its files
+into the same directory. Then, run C<make> for a demo of
+what the programmes do.
+
+There are a few prerequisites for the programmes.
+
+=over 4
+
+=item *
+
+A complete installation of Perl. If you have installed Perl
+with your distro's F<.rpm>'s or F<.deb>'s, make sure that
+C<perldoc>, C<pod2html> and C<pod2latex> have been installed, too.
+Sometimes, they are not in the main Perl package.
+
+=item *
+
+A rather recent version of Emacs. Version 23 is fine, I think
+that version 22 is fine, too, but version 21 is too much old.
+
+=item *
+
+An HTML browser, compatible with UTF-8 and tables. But nowadays,
+is there still anybody who has not such a browser?
+
+=item *
+
+A LATEX installation, including the commands C<latex> and C<pdflatex>.
+You will need also the Palatino (C<ppl>), Helvetica (C<phv>) and 
+Courier (C<pcr>) fonts, and the  C<babel>, C<fontenc>, 
+C<textcomp>, C<graphicx>, C<hyperref> et C<breakurl> packages,
+even if C<pod2latex> does not benefit from C<breakurl>. Actually,
+I always use all these packages, in the same manner many 
+Perl programmers use C<strict> and C<warnings>. But if you
+do not like these fonts and packages, you can edit the F<.tex>
+files to remove them and possibly add others. 
+
+=back
+
 =head2 How to write tables in your editor
 
 You can read the chapter about table-based text in the Emacs

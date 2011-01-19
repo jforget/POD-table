@@ -78,6 +78,47 @@ J'ai donc écrit ces divers scripts pour créer de beaux tableaux
 dans un F<makefile>, sans avoir besoin d'intervenir une fois 
 le C<make> lancé.
 
+=head2 Installation
+
+Il vous suffit juste de télécharger les fichiers de ce dépôt et
+de les installer dans un même répertoire. Et faites C<make> pour
+avoir une démo de ce que cela fait.
+
+Il existe quelques prérequis pour utiliser les programmes.
+
+=over 4
+
+=item *
+
+Une installation de Perl complète. Si vous avez installé Perl
+avec les F<.rpm> ou les F<.deb> de votre distribution, vérifiez
+que vous avez aussi C<perldoc>, C<pod2html> et C<pod2latex>.
+
+=item *
+
+Une version suffisamment récente d'Emacs. La version 23 est bonne,
+je pense qu'il en va de même avec la version 22, mais la version 21
+est trop ancienne.
+
+=item *
+
+Un navigateur HTML compatible avec UTF-8 et les tableaux. Mais qui,
+de nos jours, n'a pas S<cela ?>
+
+=item *
+
+Une installation de LATEX, avec les commandes C<latex> et C<pdflatex>.
+Vous aurez aussi besoin des polices Palatino (C<ppl>), Helvetica (C<phv>)
+et Courier (C<pcr>), ainsi que des paquets C<babel>, C<fontenc>, 
+C<textcomp>, C<graphicx>, C<hyperref> et C<breakurl>, alors que
+C<pod2latex> ne sait pas tirer parti de ce dernier paquet. En fait, 
+j'utilise systématiquement ces paquets  tout comme de nombreux
+programmeurs Perl utilisent C<strict> et C<warnings>. Mais vous pouvez
+toujours aller modifier les fichiers F<.tex> pour enlever les paquets
+qui vous déplaisent et éventuellement en ajouter d'autres.
+
+=back
+
 =head2 Comment écrire des tableaux en POD
 
 Vous pouvez vous reporter au chapitre sur les tables
