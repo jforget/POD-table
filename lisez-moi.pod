@@ -114,7 +114,7 @@ C<textcomp>, C<graphicx>, C<hyperref> et C<breakurl>, alors que
 C<pod2latex> ne sait pas tirer parti de ce dernier paquet. En fait, 
 j'utilise systématiquement ces paquets  tout comme de nombreux
 programmeurs Perl utilisent C<strict> et C<warnings>. Mais vous pouvez
-toujours aller modifier les fichiers F<.tex> pour enlever les paquets
+toujours aller modifier les fichiers F<.skel> pour enlever les paquets
 qui vous déplaisent et éventuellement en ajouter d'autres.
 
 =back
@@ -444,10 +444,6 @@ Le programme standard de conversion C<pod2html> ou C<pod2latex>
 
 =item 2
 
-Un script Perl, qui fait quelques adaptations annexes.
-
-=item 3
-
 Un script E-lisp, interprété par Emacs en mode batch, car on peut
 utiliser Emacs en mode batch, c'est-à-dire sans affichage de fenêtre
 d'édition et sans intervention d'un opérateur humain au clavier.
@@ -455,6 +451,10 @@ Ce script recherche les
 tableaux dans des balises C<E<lt>preE<gt>> du HTML généré, ou dans des
 environnements C<verbatim> dans le LATEX généré et qui les remplace
 par de vrais tableaux C<E<lt>tableE<gt>> ou environnements C<tabular>.
+
+=item 3
+
+Un script Perl, qui fait quelques adaptations annexes.
 
 =item 4
 
@@ -568,7 +568,7 @@ Tout d'abord, dans le cas du format LATEX, on passe de l'encodage
 C<utf-8> à l'encodage C<ISO-8859-1>, ce qui n'était pas nécessaire
 pour générer le fichier HTML.
 
-Dans le fichier de règle à traduire, il y avait des renvois
+Ensuite, dans le fichier de règle à traduire, il y avait des renvois
 à d'autres paragraphes, du genre :
 
   (cf. Très léger historique --- p.1)
@@ -603,6 +603,12 @@ que la même action sur du HTML. Mais le source LATEX
 comporte très peu de fioritures et on peut faire des recherches
 simples pour détecter des motifs simples dans un texte simple.
 
+Finalement, le fichier généré par C<pod2latex> n'est pas un fichier
+LATEX indépendant. Le script F<ajust-tex> le fusionne donc avec
+un fichier squelette F<.skel>. Pourquoi cette orthographe S<anglophone ?>
+Parce que l'orthographe francophone pourrait prêter à confusion en
+évoquant le I<Structured Query Language> utilisé pour les bases de données.
+
 Une dernière remarque, qui ne s'applique pas seulement à ma chaîne
 d'édition, mais à LATEX en général : lorsqu'un document produit par LATEX
 comporte des C<\pageref>, il peut se produire
@@ -623,12 +629,6 @@ C<table-recognize> et éventuellement aussi C<table-generate>
 pour des tableaux). Je ne sais pas
 encore si cela sera un module généraliste ou un greffon
 pour C<pod2html> et C<pod2latex>. 
-
-Pour la présente chaîne d'édition, il reste quelques améliorations.
-Par exemple, pour la génération LATEX, cela ne me plaît pas d'avoir à basculer d'un
-premier nom de base F<lisez-moi> vers un second nom
-de base F<lisez-moi-1>. Il faudra que je trouve comment
-simplifier cela.
 
 =head2 Licence
 

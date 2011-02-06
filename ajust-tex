@@ -5,11 +5,15 @@ use warnings;
 use Encode;
 
 my ($fichier) = @ARGV;
-open my $f, $fichier
-  or die "ouverture $fichier $!";
+
+my $fic_contenu   = $fichier . ".tex";
+my $fic_squelette = $fichier . ".skel";
+
+open my $f, $fic_contenu
+  or die "ouverture $fic_contenu $!";
 my @source = <$f>;
 close $f
-  or die "fermeture $fichier $!";
+  or die "fermeture $fic_contenu $!";
 my @dest;
 my %ref;
 
@@ -47,10 +51,21 @@ for (@source) {
   push @dest, $_;
 }
 
-open $f, '>', $fichier
-  or die "ouverture $fichier $!";
-for (@dest) {
-  print $f $_;
+open my $sk, $fic_squelette
+  or die "ouverture $fic_squelette $!";
+open $f, '>', $fic_contenu
+  or die "ouverture $fic_contenu $!";
+while (<$sk>) {
+  if (/^\\input\{$fichier\}$/) {
+    for (@dest) {
+      print $f $_;
+    }
+  }
+  else {
+    print $f $_;
+  }
 }
+close $sk
+  or die "fermeture $fic_squelette $!";
 close $f
-  or die "fermeture $fichier $!";
+  or die "fermeture $fic_contenu $!";

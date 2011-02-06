@@ -25,17 +25,17 @@ tout: latex html pdf
 
 html: lisez-moi.html README.html
 
-latex: lisez-moi-1.dvi read-me-1.dvi
+latex: lisez-moi.dvi README.dvi
 
-lisez-moi-1.dvi: lisez-moi.tex lisez-moi-1.tex
+lisez-moi.dvi: lisez-moi.tex
 
-read-me-1.dvi: README.tex read-me-1.tex
+README.dvi: README.tex
 
-pdf: read-me-1.pdf lisez-moi-1.pdf
+pdf: README.pdf lisez-moi.pdf
 
-read-me-1.pdf: README.tex read-me-1.tex
+README.pdf: README.tex
 
-lisez-moi-1.pdf: lisez-moi.tex lisez-moi-1.tex
+lisez-moi.pdf: lisez-moi.tex
 
 test: test.html
 	echo '1..1'
