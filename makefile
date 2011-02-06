@@ -2,9 +2,8 @@
 	pod2html --outfile=$@ $<
 
 %.html: %.html1
-	cp $< $@
+	emacs --batch --load=tableau $< --funcall=tableau-html
 	./ajust-html $@
-	emacs --batch --load=tableau $@ --funcall=tableau-html --funcall=save-buffer
 
 %.dvi: %.tex
 	latex $<
@@ -14,10 +13,13 @@
 	pdflatex $<
 	pdflatex $<
 
-%.tex: %.pod
-	pod2latex $<
-	./ajust-tex $@
-	emacs --batch --load=tableau $@ --funcall=tableau-latex --funcall=save-buffer
+%.tex1: %.pod
+	pod2latex --out=$@ $<
+	mv $@.tex $@
+
+%.tex: %.tex1
+	emacs --batch --load=tableau $< --funcall=tableau-latex
+	./ajust-tex $*
 
 tout: latex html pdf
 
@@ -34,3 +36,7 @@ pdf: read-me-1.pdf lisez-moi-1.pdf
 read-me-1.pdf: README.tex read-me-1.tex
 
 lisez-moi-1.pdf: lisez-moi.tex lisez-moi-1.tex
+
+test: test.html
+	echo '1..1'
+	perl -pe 's/emacs\s+\d+\.\d+\.\d+/emacs version/i' test.html | diff -qBw - test.html.ref && echo '1 ok' || echo '1 not ok'
