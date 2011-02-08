@@ -586,6 +586,19 @@ corresponding label. The second pass locates all references
 extracts the label associated to the paragraph title 
 ("Short background" in this case) and replaces the page
 number with the C<\pageref> statement.
+That gives:
+
+Cf. L<Presentation of the read-me file> --- p.1,
+cf. L<Short Background> --- p.1,
+cf. L<Installation> --- p.1,
+cf. L<How to write tables in your editor> --- p.1,
+cf. L<Basic Example> --- p.1,
+cf. L<Wide Cell> --- p.1,
+cf. L<Heightened Cell> --- p.1,
+cf. L<Two-Dimension Extensions> --- p.1,
+cf. L<How It Works> --- p.1,
+cf. L<How the E-lisp script works> --- p.1,
+cf. L<How the Perl Scripts Works> --- p.1.
 
 This means that you parse a LATEX file with regexps,
 which is as dirty as parsing HTML with regexps. But 

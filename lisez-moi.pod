@@ -597,6 +597,21 @@ recherche l'étiquette associée au titre de paragraphe
 remplace le numéro de page par l'instruction C<\pageref>
 correspondante.
 
+Et du coup, on obtient :
+
+Cf. L<Présentation du fichier lisez-moi> --- p.1,
+cf. L<Très léger historique> --- p.1,
+cf. L<Installation> --- p.1,
+cf. L<Comment écrire des tableaux en POD> --- p.1,
+cf. L<Exemple de base> --- p.1,
+cf. L<Cellule allongée> --- p.1,
+cf. L<Cellule agrandie> --- p.1,
+cf. L<Extension dans les deux sens> --- p.1,
+cf. L<Fonctionnement de la chaîne d'édition> --- p.1,
+cf. L<Fonctionnement du script E-lisp> --- p.1,
+cf. L<Scripts Perl> --- p.1.
+
+
 Cela revient à découper un source LATEX à 
 coup d'expressions régulières, ce qui n'est pas plus propre
 que la même action sur du HTML. Mais le source LATEX

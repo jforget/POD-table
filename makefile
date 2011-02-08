@@ -40,3 +40,6 @@ lisez-moi.pdf: lisez-moi.tex
 test: test.html
 	echo '1..1'
 	perl -pe 's/emacs\s+\d+\.\d+\.\d+/emacs version/i' test.html | diff -qBw - test.html.ref && echo '1 ok' || echo '1 not ok'
+
+reinit:
+	rm *.html1 *.html *.tex1 *.tex *.dvi *.pdf *.log *.aux *.out
