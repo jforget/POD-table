@@ -37,9 +37,10 @@ README.pdf: README.tex
 
 lisez-moi.pdf: lisez-moi.tex
 
-test: test.html
-	echo '1..1'
+test: test.html test.tex
+	echo '1..2'
 	perl -pe 's/emacs\s+\d+\.\d+\.\d+/emacs version/i' test.html | diff -qBw - test.html.ref && echo '1 ok' || echo '1 not ok'
+	perl -pe 's/emacs\s+\d+\.\d+\.\d+/emacs version/i' test.tex  | diff -qBw - test.tex.ref  && echo '2 ok' || echo '2 not ok'
 
 reinit:
-	rm *.html1 *.html *.tex1 *.tex *.dvi *.pdf *.log *.aux *.out
+	rm lisez-moi.html1 README.html1 *.html lisez-moi.tex1 README.tex1 *.tex *.dvi *.pdf *.log *.aux *.out
