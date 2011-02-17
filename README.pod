@@ -575,7 +575,7 @@ only the first one will appear in the generated file. Thus:
   | Missing       | Hidden        | Absent        |
   .---------------.---------------.---------------.
 
-donnera :
+will result in:
 
   +---------------+---------------+
   | Stays         | Present       |
