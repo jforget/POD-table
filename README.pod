@@ -531,6 +531,64 @@ The script copies and pastes the generated source into the HTML or LATEX file.
 
 And the script loops, searching a new table to process.
 
+Upon exiting the loop, the buffer is written into a file, the name
+of which is the input filename, shortened by one char. So the
+extension F<.html1> becomes F<.html> and the extension F<.tex1>
+becomes F<.tex>.
+
+=head4 Known problems
+
+If the table is not correct, for example if the top line or the 
+bottom line are missing, the result will be a truncated array. Thus:
+
+  | Vanish        | Evaporated    | Invisible     |
+  .---------------.---------------.---------------.
+  | Stays         | Present       | Permanent     |
+  .---------------.---------------.---------------.
+  | Missing       | Hidden        | Absent        |
+
+gives :
+
+  | Vanish        | Evaporated    | Invisible     |
+  +---------------+---------------+---------------+
+  | Stays         | Present       | Permanent     |
+  +---------------+---------------+---------------+
+  | Missing       | Hidden        | Absent        |
+
+And even the script crashes with:
+
+  | Vanish        | Evaporated    | Invisible     |
+  .---------------.---------------.---------------.
+  | Missing       | Hidden        | Absent        |
+
+Also, if two arrays are contiguous, without a blank line,
+only the first one will appear in the generated file. Thus:
+
+  .---------------.---------------.
+  | Stays         | Present       |
+  .---------------.---------------.
+  | Constant      | Permanent     |
+  .---------------.---------------.
+  .---------------.---------------.---------------.
+  | Vanish        | Evaporated    | Invisible     |
+  .---------------.---------------.---------------.
+  | Missing       | Hidden        | Absent        |
+  .---------------.---------------.---------------.
+
+donnera :
+
+  +---------------+---------------+
+  | Stays         | Present       |
+  +---------------+---------------+
+  | Constant      | Permanent     |
+  +---------------+---------------+
+  +---------------+---------------+---------------+
+  | Vanish        | Evaporated    | Invisible     |
+  +---------------+---------------+---------------+
+  | Missing       | Hidden        | Absent        |
+  +---------------+---------------+---------------+
+
+
 =head3 How the Perl Scripts Works
 
 The Perl scripts executes a few simple modifications, but

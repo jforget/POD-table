@@ -535,6 +535,64 @@ complet.
 
 Et on boucle à la recherche d'un nouveau tableau.
 
+En sortie de boucle, le tampon est sauvegardé dans un fichier dont
+le nom correspond au nom du fichier en entrée, raccourci d'un
+caractère. L'extension F<.html1> devient donc F<.html> et l'extension
+F<.tex1> devient F<.tex>.
+
+=head4 Problèmes connus
+
+Si le tableau n'est pas correct, par exemple s'il manque la ligne
+du haut ou la ligne du bas, le résultat obtenu sera un tableau tronqué.
+Ainsi :
+
+  | Disparu       | Évaporé       | Invisible     |
+  .---------------.---------------.---------------.
+  | Reste         | Présent       | Permanent     |
+  .---------------.---------------.---------------.
+  | Escamoté      | Caché         | Absent        |
+
+devient :
+
+  | Disparu       | Évaporé       | Invisible     |
+  +---------------+---------------+---------------+
+  | Reste         | Présent       | Permanent     |
+  +---------------+---------------+---------------+
+  | Escamoté      | Caché         | Absent        |
+
+Et même, cela plante avec :
+
+  | Disparu       | Évaporé       | Invisible     |
+  .---------------.---------------.---------------.
+  | Escamoté      | Caché         | Absent        |
+
+Également, si deux tableaux sont contigus, le premier sera traité, 
+mais le deuxième disparaîtra. Ainsi :
+
+  .---------------.---------------.
+  | Reste         | Présent       |
+  .---------------.---------------.
+  | Constant      | Permanent     |
+  .---------------.---------------.
+  .---------------.---------------.---------------.
+  | Disparu       | Évaporé       | Invisible     |
+  .---------------.---------------.---------------.
+  | Escamoté      | Caché         | Absent        |
+  .---------------.---------------.---------------.
+
+donnera :
+
+  +---------------+---------------+
+  | Reste         | Présent       |
+  +---------------+---------------+
+  | Constant      | Permanent     |
+  +---------------+---------------+
+  +---------------+---------------+---------------+
+  | Disparu       | Évaporé       | Invisible     |
+  +---------------+---------------+---------------+
+  | Escamoté      | Caché         | Absent        |
+  +---------------+---------------+---------------+
+
 =head3 Scripts Perl
 
 Les scripts Perl servent à effectuer quelques adaptations
